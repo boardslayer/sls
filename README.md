@@ -2,6 +2,12 @@
 
 > Search across 15,000+ papers from top security & cryptography conferences.
 
+---
+
+_The application has been developed with almost 100% AI (Claude Opus) code and was inspired by [3gpp.guru](3gpp.guru)._
+
+---
+
 SLS is a fast, fully static search engine for academic papers published at the world's top-tier security and cryptography venues. All data is pre-fetched from [DBLP](https://dblp.org) and optionally enriched with abstracts from [Semantic Scholar](https://www.semanticscholar.org). Search happens entirely client-side — no server, no API calls at query time.
 
 **Repository**: [github.com/boardslayer/SLS](https://github.com/boardslayer/SLS)
