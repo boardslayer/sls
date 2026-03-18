@@ -1,0 +1,67 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 3 * * 1' # Weekly Monday 3:17 AM UTC (data refresh)
+  workflow_dispatch: # Manual trigger
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      # Cache Semantic Scholar responses across runs
+      - uses: actions/cache@v4
+        with:
+          path: data/s2-cache
+          key: s2-cache-${{ github.run_id }}
+          restore-keys: s2-cache-
+
+      # Fetch papers from DBLP and build search index
+      # (skipping Semantic Scholar enrichment on CI for speed — run locally first)
+      - run: npm run build-data-quick
+
+      # Upload artifact for GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build site artifact
+        run: |
+          mkdir -p _site
+          cp index.html _site/
+          cp -r css _site/
+          cp -r js _site/
+          cp -r assets _site/
+          cp -r data _site/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

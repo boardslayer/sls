@@ -1,0 +1,43 @@
+{
+  "totalPapers": 15204,
+  "mainTrackPapers": 14743,
+  "workshopPapers": 461,
+  "papersWithAbstract": 0,
+  "yearRange": {
+    "min": 1981,
+    "max": 2025
+  },
+  "perVenue": {
+    "CCS": {
+      "total": 3984,
+      "mainTrack": 3984,
+      "workshop": 0
+    },
+    "NDSS": {
+      "total": 1564,
+      "mainTrack": 1564,
+      "workshop": 0
+    },
+    "USENIX": {
+      "total": 3505,
+      "mainTrack": 3044,
+      "workshop": 461
+    },
+    "SP": {
+      "total": 1417,
+      "mainTrack": 1417,
+      "workshop": 0
+    },
+    "CRYPTO": {
+      "total": 2527,
+      "mainTrack": 2527,
+      "workshop": 0
+    },
+    "EUROCRYPT": {
+      "total": 2207,
+      "mainTrack": 2207,
+      "workshop": 0
+    }
+  },
+  "lastUpdated": "2026-03-18"
+}

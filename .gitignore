@@ -1,0 +1,5 @@
+node_modules/
+data/raw-dblp.json
+data/enriched.json
+data/s2-cache/
+.DS_Store
