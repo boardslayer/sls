@@ -1,6 +1,7 @@
 # SLS: Security Literature Search
 
 > Search across 15,000+ papers from top security & cryptography conferences.
+> The application has been developed with almost 100% AI (Claude Opus) code. 
 
 ---
 
