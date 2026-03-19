@@ -63,7 +63,9 @@
       ? `https://doi.org/${paper.doi}`
       : paper.ee || paper.url || '#';
 
-    let badges = `<span class="venue-badge" style="background: var(--color-${paper.venue})">${escapeHtml(VENUE_NAMES[paper.venue] || paper.venue)}</span>`;
+    const venueColor = `var(--color-${paper.venue})`;
+
+    let badges = `<span class="venue-badge" style="--badge-color: ${venueColor}">${escapeHtml(VENUE_NAMES[paper.venue] || paper.venue)}</span>`;
     if (paper.isWorkshop) {
       badges += `<span class="workshop-badge">Workshop</span>`;
     }
@@ -97,9 +99,9 @@
     }
 
     return `
-      <div class="paper-card">
+      <div class="paper-card" style="--card-venue-color: ${venueColor}">
         <div class="paper-top">
-          <div>${badges}</div>
+          <div class="paper-badges">${badges}</div>
           <div class="paper-info">
             <div class="paper-title"><a href="${escapeHtml(link)}" target="_blank" rel="noopener">${title}</a></div>
             <div class="paper-authors">${authors}</div>
