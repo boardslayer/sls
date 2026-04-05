@@ -14,5 +14,8 @@
   },
   "devDependencies": {
     "minisearch": "^7.1.1"
+  },
+  "dependencies": {
+    "undici": "^8.0.2"
   }
 }
