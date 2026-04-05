@@ -1,22 +1,22 @@
 /* SLS (Security Literature Search) — Main application logic */
 
 (function () {
-  'use strict';
+  "use strict";
 
   // DOM elements
-  const searchInput = document.getElementById('searchInput');
-  const suggestionsEl = document.getElementById('suggestions');
-  const statsLine = document.getElementById('statsLine');
-  const resultsEl = document.getElementById('results');
-  const loadingState = document.getElementById('loadingState');
-  const lastUpdatedEl = document.getElementById('lastUpdated');
-  const themeToggle = document.getElementById('themeToggle');
-  const themeIcon = document.getElementById('themeIcon');
-  const yearMinInput = document.getElementById('yearMin');
-  const yearMaxInput = document.getElementById('yearMax');
-  const workshopToggle = document.getElementById('workshopToggle');
-  const sortSelect = document.getElementById('sortSelect');
-  const venueChips = document.querySelectorAll('.venue-chip');
+  const searchInput = document.getElementById("searchInput");
+  const suggestionsEl = document.getElementById("suggestions");
+  const statsLine = document.getElementById("statsLine");
+  const resultsEl = document.getElementById("results");
+  const loadingState = document.getElementById("loadingState");
+  const lastUpdatedEl = document.getElementById("lastUpdated");
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
+  const yearMinInput = document.getElementById("yearMin");
+  const yearMaxInput = document.getElementById("yearMax");
+  const workshopToggle = document.getElementById("workshopToggle");
+  const sortSelect = document.getElementById("sortSelect");
+  const venueChips = document.querySelectorAll(".venue-chip");
 
   // Pagination state for lazy loading
   let currentResults = [];
@@ -26,33 +26,37 @@
 
   // ── Theme ──────────────────────────────────────
   function initTheme() {
-    const saved = localStorage.getItem('theme');
+    const saved = localStorage.getItem("theme");
     if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
+      document.documentElement.setAttribute("data-theme", saved);
     }
     updateThemeIcon();
   }
 
   function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme');
+    const current = document.documentElement.getAttribute("data-theme");
     let next;
-    if (current === 'dark') {
-      next = 'light';
-    } else if (current === 'light') {
-      next = 'dark';
+    if (current === "dark") {
+      next = "light";
+    } else if (current === "light") {
+      next = "dark";
     } else {
       // No explicit theme — check system preference and go opposite
-      next = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark';
+      next = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "light"
+        : "dark";
     }
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
     updateThemeIcon();
   }
 
   function updateThemeIcon() {
-    const theme = document.documentElement.getAttribute('data-theme');
-    const isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    themeIcon.textContent = isDark ? '\u2600' : '\u263E'; // ☀ or ☾
+    const theme = document.documentElement.getAttribute("data-theme");
+    const isDark =
+      theme === "dark" ||
+      (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    themeIcon.textContent = isDark ? "\u2600" : "\u263E"; // ☀ or ☾
   }
 
   // ── Render Functions ───────────────────────────
@@ -61,7 +65,7 @@
     const title = escapeHtml(paper.title);
     const link = paper.doi
       ? `https://doi.org/${paper.doi}`
-      : paper.ee || paper.url || '#';
+      : paper.ee || paper.url || "#";
 
     const venueColor = `var(--color-${paper.venue})`;
 
@@ -75,7 +79,7 @@
       meta += `<span class="citation-badge" title="Citations">\u{1F4D6} ${paper.citationCount}</span>`;
     }
 
-    let links = '';
+    let links = "";
     if (paper.doi) {
       links += `<a href="https://doi.org/${escapeHtml(paper.doi)}" target="_blank" rel="noopener">DOI</a>`;
     }
@@ -86,15 +90,15 @@
       links += `<a href="${escapeHtml(paper.pdfUrl)}" target="_blank" rel="noopener">PDF</a>`;
     }
 
-    let expandSection = '';
+    let expandSection = "";
     if (paper.abstract || paper.tldr) {
       expandSection = `
         <div class="paper-expand" onclick="this.nextElementSibling.classList.toggle('visible')">
           &#9662; Abstract
         </div>
         <div class="paper-abstract">
-          ${paper.tldr ? `<p class="paper-tldr">TL;DR: ${escapeHtml(paper.tldr)}</p>` : ''}
-          ${paper.abstract ? `<p>${escapeHtml(paper.abstract)}</p>` : ''}
+          ${paper.tldr ? `<p class="paper-tldr">TL;DR: ${escapeHtml(paper.tldr)}</p>` : ""}
+          ${paper.abstract ? `<p>${escapeHtml(paper.abstract)}</p>` : ""}
         </div>`;
     }
 
@@ -127,59 +131,70 @@
       resultsEl.innerHTML = `
         <div class="empty-state">
           <h2>No papers found</h2>
-          <p>${query ? `No results for "${escapeHtml(query)}". Try different keywords or adjust filters.` : 'Adjust your filters to see papers.'}</p>
+          <p>${query ? `No results for "${escapeHtml(query)}". Try different keywords or adjust filters.` : "Adjust your filters to see papers."}</p>
         </div>`;
       return;
     }
 
     // Sort if not relevance (MiniSearch already sorted by relevance)
-    if (FilterState.sort !== 'relevance' || !FilterState.query) {
-      SearchEngine.sortResults(papers, FilterState.sort === 'relevance' ? 'year-desc' : FilterState.sort);
+    if (FilterState.sort !== "relevance" || !FilterState.query) {
+      SearchEngine.sortResults(
+        papers,
+        FilterState.sort === "relevance" ? "year-desc" : FilterState.sort,
+      );
     }
 
     // Results header
     const headerHtml = `
       <div class="results-header">
-        <span class="result-count">${papers.length.toLocaleString()} paper${papers.length !== 1 ? 's' : ''} found</span>
+        <span class="result-count">${papers.length.toLocaleString()} paper${papers.length !== 1 ? "s" : ""} found</span>
       </div>`;
 
-    resultsEl.innerHTML = headerHtml + '<div id="papersList"></div><div id="sentinel" style="height:1px"></div>';
+    resultsEl.innerHTML =
+      headerHtml +
+      '<div id="papersList"></div><div id="sentinel" style="height:1px"></div>';
     loadMorePapers();
 
     // Set up IntersectionObserver for lazy loading
-    const sentinel = document.getElementById('sentinel');
+    const sentinel = document.getElementById("sentinel");
     if (sentinel && papers.length > PAGE_SIZE) {
-      observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) loadMorePapers();
-      }, { rootMargin: '200px' });
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) loadMorePapers();
+        },
+        { rootMargin: "200px" },
+      );
       observer.observe(sentinel);
     }
   }
 
   function loadMorePapers() {
-    const list = document.getElementById('papersList');
+    const list = document.getElementById("papersList");
     if (!list || displayedCount >= currentResults.length) return;
 
     const end = Math.min(displayedCount + PAGE_SIZE, currentResults.length);
-    let html = '';
+    let html = "";
     for (let i = displayedCount; i < end; i++) {
       html += renderPaperCard(currentResults[i]);
     }
-    list.insertAdjacentHTML('beforeend', html);
+    list.insertAdjacentHTML("beforeend", html);
     displayedCount = end;
   }
 
   function renderSuggestions(suggestions) {
     if (!suggestions || suggestions.length === 0) {
-      suggestionsEl.classList.remove('active');
-      suggestionsEl.innerHTML = '';
+      suggestionsEl.classList.remove("active");
+      suggestionsEl.innerHTML = "";
       return;
     }
 
     suggestionsEl.innerHTML = suggestions
-      .map((s, i) => `<div class="suggestion-item" data-index="${i}">${escapeHtml(s.suggestion)}</div>`)
-      .join('');
-    suggestionsEl.classList.add('active');
+      .map(
+        (s, i) =>
+          `<div class="suggestion-item" data-index="${i}">${escapeHtml(s.suggestion)}</div>`,
+      )
+      .join("");
+    suggestionsEl.classList.add("active");
   }
 
   // ── Search Execution ──────────────────────────
@@ -202,97 +217,101 @@
   // ── Event Bindings ────────────────────────────
   function bindEvents() {
     // Search input
-    searchInput.addEventListener('input', function () {
+    searchInput.addEventListener("input", function () {
       FilterState.query = this.value.trim();
       FilterState._writeURL();
       debouncedSuggest();
     });
 
-    searchInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
-        suggestionsEl.classList.remove('active');
-        FilterState.set('query', this.value.trim());
+    searchInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        suggestionsEl.classList.remove("active");
+        FilterState.set("query", this.value.trim());
         executeSearch();
-      } else if (e.key === 'Escape') {
-        suggestionsEl.classList.remove('active');
-      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      } else if (e.key === "Escape") {
+        suggestionsEl.classList.remove("active");
+      } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault();
-        navigateSuggestions(e.key === 'ArrowDown' ? 1 : -1);
+        navigateSuggestions(e.key === "ArrowDown" ? 1 : -1);
       }
     });
 
     // Suggestion clicks
-    suggestionsEl.addEventListener('click', function (e) {
-      const item = e.target.closest('.suggestion-item');
+    suggestionsEl.addEventListener("click", function (e) {
+      const item = e.target.closest(".suggestion-item");
       if (item) {
         searchInput.value = item.textContent;
-        FilterState.set('query', item.textContent);
-        suggestionsEl.classList.remove('active');
+        FilterState.set("query", item.textContent);
+        suggestionsEl.classList.remove("active");
         executeSearch();
       }
     });
 
     // Close suggestions on outside click
-    document.addEventListener('click', function (e) {
-      if (!e.target.closest('.search-wrapper')) {
-        suggestionsEl.classList.remove('active');
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".search-wrapper")) {
+        suggestionsEl.classList.remove("active");
       }
     });
 
     // Venue chips
     venueChips.forEach((chip) => {
-      chip.addEventListener('click', function () {
+      chip.addEventListener("click", function () {
         const venue = this.dataset.venue;
-        this.classList.toggle('active');
+        this.classList.toggle("active");
         FilterState.toggleVenue(venue);
       });
     });
 
     // Year inputs
-    yearMinInput.addEventListener('change', function () {
-      FilterState.set('yearMin', this.value ? parseInt(this.value, 10) : null);
+    yearMinInput.addEventListener("change", function () {
+      FilterState.set("yearMin", this.value ? parseInt(this.value, 10) : null);
     });
-    yearMaxInput.addEventListener('change', function () {
-      FilterState.set('yearMax', this.value ? parseInt(this.value, 10) : null);
+    yearMaxInput.addEventListener("change", function () {
+      FilterState.set("yearMax", this.value ? parseInt(this.value, 10) : null);
     });
 
     // Workshop toggle
-    workshopToggle.addEventListener('change', function () {
-      FilterState.set('includeWorkshops', this.checked);
+    workshopToggle.addEventListener("change", function () {
+      FilterState.set("includeWorkshops", this.checked);
     });
 
     // Sort select
-    sortSelect.addEventListener('change', function () {
-      FilterState.set('sort', this.value);
+    sortSelect.addEventListener("change", function () {
+      FilterState.set("sort", this.value);
     });
 
     // Theme toggle
-    themeToggle.addEventListener('click', toggleTheme);
+    themeToggle.addEventListener("click", toggleTheme);
 
     // On filter change, re-execute search
     FilterState.onChange(executeSearch);
   }
 
   function navigateSuggestions(dir) {
-    const items = suggestionsEl.querySelectorAll('.suggestion-item');
+    const items = suggestionsEl.querySelectorAll(".suggestion-item");
     if (items.length === 0) return;
 
-    const active = suggestionsEl.querySelector('.suggestion-item.active');
-    let idx = active ? parseInt(active.dataset.index, 10) + dir : (dir === 1 ? 0 : items.length - 1);
+    const active = suggestionsEl.querySelector(".suggestion-item.active");
+    let idx = active
+      ? parseInt(active.dataset.index, 10) + dir
+      : dir === 1
+        ? 0
+        : items.length - 1;
     idx = Math.max(0, Math.min(items.length - 1, idx));
 
-    items.forEach((el) => el.classList.remove('active'));
-    items[idx].classList.add('active');
+    items.forEach((el) => el.classList.remove("active"));
+    items[idx].classList.add("active");
     searchInput.value = items[idx].textContent;
   }
 
   // ── Sync UI from FilterState ──────────────────
   function syncUIFromState() {
-    searchInput.value = FilterState.query || '';
+    searchInput.value = FilterState.query || "";
 
     venueChips.forEach((chip) => {
       const venue = chip.dataset.venue;
-      chip.classList.toggle('active', FilterState.venues.has(venue));
+      chip.classList.toggle("active", FilterState.venues.has(venue));
     });
 
     if (FilterState.yearMin) yearMinInput.value = FilterState.yearMin;
@@ -315,8 +334,10 @@
       if (stats) {
         statsLine.textContent = `Searching across ${stats.totalPapers.toLocaleString()} papers from 6 top-tier conferences (${stats.yearRange.min}\u2013${stats.yearRange.max})`;
         if (stats.lastUpdated) lastUpdatedEl.textContent = stats.lastUpdated;
-        if (!FilterState.yearMin) yearMinInput.placeholder = stats.yearRange.min;
-        if (!FilterState.yearMax) yearMaxInput.placeholder = stats.yearRange.max;
+        if (!FilterState.yearMin)
+          yearMinInput.placeholder = stats.yearRange.min;
+        if (!FilterState.yearMax)
+          yearMaxInput.placeholder = stats.yearRange.max;
       }
 
       // Remove loading state
@@ -328,7 +349,7 @@
       // Focus search input
       searchInput.focus();
     } catch (err) {
-      console.error('Failed to initialize:', err);
+      console.error("Failed to initialize:", err);
       resultsEl.innerHTML = `
         <div class="empty-state">
           <h2>Failed to load data</h2>
@@ -339,8 +360,8 @@
   }
 
   // Boot
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }

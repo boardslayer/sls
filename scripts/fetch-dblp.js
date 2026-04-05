@@ -5,8 +5,13 @@
  * and tags workshop papers. Outputs data/raw-dblp.json.
  */
 
-import { writeFileSync, mkdirSync } from 'fs';
-import { VENUES, DBLP_API_BASE, DBLP_HITS_PER_PAGE, DBLP_DELAY_MS } from './config.js';
+import { writeFileSync, mkdirSync } from "fs";
+import {
+  VENUES,
+  DBLP_API_BASE,
+  DBLP_HITS_PER_PAGE,
+  DBLP_DELAY_MS,
+} from "./config.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -14,21 +19,21 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 function decodeHtmlEntities(str) {
   if (!str) return str;
   return str
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
     .replace(/&apos;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)));
 }
 
 // Workshop indicators in DBLP key paths or venue names
-const WORKSHOP_KEY_PATTERNS = ['-ws/', 'workshop/'];
-const WORKSHOP_VENUE_MARKER = '@';
+const WORKSHOP_KEY_PATTERNS = ["-ws/", "workshop/"];
+const WORKSHOP_VENUE_MARKER = "@";
 
 function isWorkshop(paper) {
-  const key = paper.key || '';
-  const venue = paper.venue || '';
+  const key = paper.key || "";
+  const venue = paper.venue || "";
   if (venue.includes(WORKSHOP_VENUE_MARKER)) return true;
   for (const pat of WORKSHOP_KEY_PATTERNS) {
     if (key.includes(pat)) return true;
@@ -41,8 +46,10 @@ function normalizeAuthors(authorsField) {
   const raw = authorsField.author;
   const arr = Array.isArray(raw) ? raw : [raw];
   return arr.map((a) => ({
-    name: decodeHtmlEntities((a.text || '').replace(/ \d{4}$/, '').replace(/ 000\d$/, '')),
-    pid: a['@pid'] || null,
+    name: decodeHtmlEntities(
+      (a.text || "").replace(/ \d{4}$/, "").replace(/ 000\d$/, ""),
+    ),
+    pid: a["@pid"] || null,
   }));
 }
 
@@ -61,16 +68,20 @@ async function fetchVenue(venue) {
   console.log(`  Counting ${venue.key}...`);
   const countResp = await fetch(countUrl);
   const countData = await countResp.json();
-  const total = parseInt(countData.result.hits['@total'], 10);
+  const total = parseInt(countData.result.hits["@total"], 10);
   console.log(`  ${venue.key}: ${total} papers total`);
 
   while (offset < total) {
     const url = `${DBLP_API_BASE}?q=${encodeURIComponent(venue.dblpQuery)}&format=json&h=${DBLP_HITS_PER_PAGE}&f=${offset}`;
-    console.log(`  Fetching ${venue.key} [${offset}..${offset + DBLP_HITS_PER_PAGE}]`);
+    console.log(
+      `  Fetching ${venue.key} [${offset}..${offset + DBLP_HITS_PER_PAGE}]`,
+    );
 
     const resp = await fetch(url);
     if (!resp.ok) {
-      console.error(`  HTTP ${resp.status} for ${venue.key} at offset ${offset}, retrying...`);
+      console.error(
+        `  HTTP ${resp.status} for ${venue.key} at offset ${offset}, retrying...`,
+      );
       await sleep(5000);
       continue;
     }
@@ -83,11 +94,11 @@ async function fetchVenue(venue) {
     for (const hit of hitArr) {
       const info = hit.info;
       papers.push({
-        title: decodeHtmlEntities((info.title || '').replace(/\.$/, '')), // Remove trailing period, decode entities
+        title: decodeHtmlEntities((info.title || "").replace(/\.$/, "")), // Remove trailing period, decode entities
         authors: normalizeAuthors(info.authors),
         year: parseInt(info.year, 10) || 0,
         venue: normalizeVenue(info.venue, venue.key),
-        rawVenue: info.venue || '',
+        rawVenue: info.venue || "",
         doi: info.doi || null,
         ee: info.ee || null,
         url: info.url || null,
@@ -106,14 +117,16 @@ async function fetchVenue(venue) {
 }
 
 async function main() {
-  console.log('SLS: Fetching papers from DBLP...\n');
+  console.log("SLS: Fetching papers from DBLP...\n");
 
   const allPapers = [];
   for (const venue of VENUES) {
     console.log(`\n[${venue.key}] ${venue.fullName}`);
     const papers = await fetchVenue(venue);
     allPapers.push(...papers);
-    console.log(`  -> ${papers.length} papers (${papers.filter((p) => p.isWorkshop).length} workshop)`);
+    console.log(
+      `  -> ${papers.length} papers (${papers.filter((p) => p.isWorkshop).length} workshop)`,
+    );
   }
 
   // Assign sequential IDs
@@ -121,16 +134,18 @@ async function main() {
     p.id = i + 1;
   });
 
-  mkdirSync('data', { recursive: true });
-  writeFileSync('data/raw-dblp.json', JSON.stringify(allPapers, null, 2));
+  mkdirSync("data", { recursive: true });
+  writeFileSync("data/raw-dblp.json", JSON.stringify(allPapers, null, 2));
 
   const mainTrack = allPapers.filter((p) => !p.isWorkshop).length;
   const workshop = allPapers.filter((p) => p.isWorkshop).length;
-  console.log(`\nDone! ${allPapers.length} total papers (${mainTrack} main track, ${workshop} workshop)`);
-  console.log('Output: data/raw-dblp.json');
+  console.log(
+    `\nDone! ${allPapers.length} total papers (${mainTrack} main track, ${workshop} workshop)`,
+  );
+  console.log("Output: data/raw-dblp.json");
 }
 
 main().catch((err) => {
-  console.error('Fatal error:', err);
+  console.error("Fatal error:", err);
   process.exit(1);
 });
