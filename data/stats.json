@@ -1,11 +1,11 @@
 {
-  "totalPapers": 15204,
-  "mainTrackPapers": 14743,
+  "totalPapers": 52178,
+  "mainTrackPapers": 51717,
   "workshopPapers": 461,
   "papersWithAbstract": 0,
   "yearRange": {
-    "min": 1981,
-    "max": 2025
+    "min": 1982,
+    "max": 2026
   },
   "perVenue": {
     "CCS": {
@@ -28,16 +28,51 @@
       "mainTrack": 1417,
       "workshop": 0
     },
-    "CRYPTO": {
-      "total": 2527,
-      "mainTrack": 2527,
-      "workshop": 0
-    },
     "EUROCRYPT": {
       "total": 2207,
       "mainTrack": 2207,
       "workshop": 0
+    },
+    "EuroSP": {
+      "total": 532,
+      "mainTrack": 532,
+      "workshop": 0
+    },
+    "VehicleSec": {
+      "total": 64,
+      "mainTrack": 64,
+      "workshop": 0
+    },
+    "TITS": {
+      "total": 10000,
+      "mainTrack": 10000,
+      "workshop": 0
+    },
+    "TVT": {
+      "total": 10000,
+      "mainTrack": 10000,
+      "workshop": 0
+    },
+    "VC": {
+      "total": 5124,
+      "mainTrack": 5124,
+      "workshop": 0
+    },
+    "TIFS": {
+      "total": 5365,
+      "mainTrack": 5365,
+      "workshop": 0
+    },
+    "TDSC": {
+      "total": 2870,
+      "mainTrack": 2870,
+      "workshop": 0
+    },
+    "COMPSEC": {
+      "total": 5546,
+      "mainTrack": 5546,
+      "workshop": 0
     }
   },
-  "lastUpdated": "2026-03-18"
+  "lastUpdated": "2026-04-07"
 }

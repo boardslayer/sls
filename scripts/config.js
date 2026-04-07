@@ -30,13 +30,13 @@ export const VENUES = [
     color: "#a855f7",
     dblpQuery: "venue:SP:",
   },
-  {
-    key: "CRYPTO",
-    name: "CRYPTO",
-    fullName: "Annual International Cryptology Conference",
-    color: "#86efac",
-    dblpQuery: "venue:CRYPTO:",
-  },
+  // {
+  //   key: "CRYPTO",
+  //   name: "CRYPTO",
+  //   fullName: "Annual International Cryptology Conference",
+  //   color: "#86efac",
+  //   dblpQuery: "venue:CRYPTO:",
+  // },
   {
     key: "EUROCRYPT",
     name: "EUROCRYPT",
@@ -106,7 +106,7 @@ export const VENUES = [
 // DBLP API settings
 export const DBLP_API_BASE = "https://dblp.org/search/publ/api";
 export const DBLP_HITS_PER_PAGE = 1000;
-export const DBLP_DELAY_MS = 1500; // Delay between API requests to be polite
+export const DBLP_DELAY_MS = 3000; // Delay between API requests to be polite
 
 // Semantic Scholar API settings
 export const S2_API_BASE = "https://api.semanticscholar.org/graph/v1/paper";
