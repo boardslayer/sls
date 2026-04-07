@@ -1,0 +1,949 @@
+From c2e05bf0cc997d53537c0eb051e7825490ffd54e Mon Sep 17 00:00:00 2001
+From: ranjulbn20 <ranjulbn20@gmail.com>
+Date: Sun, 5 Apr 2026 13:00:24 +0530
+Subject: [PATCH] feat: add EuroS&P, VehicleSec, T-ITS, TVT, Vehicular Comms,
+ TIFS, TDSC, Computers & Security
+
+---
+ css/style.css     | 408 ++++++++++++++++++++++++++++------------------
+ index.html        |   8 +
+ js/utils.js       |  48 ++++--
+ package-lock.json |  16 +-
+ package.json      |   3 +
+ scripts/config.js | 125 ++++++++++----
+ 6 files changed, 405 insertions(+), 203 deletions(-)
+
+diff --git a/css/style.css b/css/style.css
+index de59a6e..ec0116b 100644
+--- a/css/style.css
++++ b/css/style.css
+@@ -5,162 +5,182 @@
+ /* ── Google Fonts loaded in HTML ─────────────── */
+ 
+ /* ── Reset & Base ────────────────────────────── */
+-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
++*,
++*::before,
++*::after {
++  box-sizing: border-box;
++  margin: 0;
++  padding: 0;
++}
+ 
+ :root {
+   /* Surface & Background */
+-  --bg:             #08080d;
+-  --bg-surface:     #0e0f16;
+-  --bg-card:        #12131c;
+-  --bg-input:       #0e0f16;
+-  --bg-hero:        #08080d;
+-  --bg-filter:      #0e0f16;
++  --bg: #08080d;
++  --bg-surface: #0e0f16;
++  --bg-card: #12131c;
++  --bg-input: #0e0f16;
++  --bg-hero: #08080d;
++  --bg-filter: #0e0f16;
+ 
+   /* Text — warm off-white for dark backgrounds */
+-  --text:           #e4e0d8;
++  --text: #e4e0d8;
+   --text-secondary: #9a96a8;
+-  --text-muted:     #5c586a;
+-  --text-dim:       #3a374a;
++  --text-muted: #5c586a;
++  --text-dim: #3a374a;
+ 
+   /* Borders */
+-  --border:         #1e1f2c;
+-  --border-subtle:  #161722;
+-  --border-active:  #2a2b3a;
++  --border: #1e1f2c;
++  --border-subtle: #161722;
++  --border-active: #2a2b3a;
+ 
+   /* Accent — warm amber/gold */
+-  --accent:         #c9933a;
+-  --accent-hover:   #dba64e;
+-  --accent-soft:    rgba(201, 147, 58, 0.08);
+-  --accent-glow:    rgba(201, 147, 58, 0.15);
+-  --accent-vivid:   #e5a83d;
++  --accent: #c9933a;
++  --accent-hover: #dba64e;
++  --accent-soft: rgba(201, 147, 58, 0.08);
++  --accent-glow: rgba(201, 147, 58, 0.15);
++  --accent-vivid: #e5a83d;
+ 
+   /* Secondary accent — teal for links */
+-  --link:           #5bb8c4;
+-  --link-hover:     #7dd0da;
++  --link: #5bb8c4;
++  --link-hover: #7dd0da;
+ 
+   /* Shadows */
+-  --shadow-xs:      0 1px 2px rgba(0, 0, 0, 0.3);
+-  --shadow-sm:      0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+-  --shadow-md:      0 4px 16px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
+-  --shadow-lg:      0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+-  --shadow-search:  0 4px 32px rgba(201, 147, 58, 0.08), 0 1px 4px rgba(0, 0, 0, 0.4);
+-  --shadow-card-hover: 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-active);
+-  --shadow-glow:    0 0 20px rgba(201, 147, 58, 0.12);
++  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
++  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
++  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
++  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
++  --shadow-search:
++    0 4px 32px rgba(201, 147, 58, 0.08), 0 1px 4px rgba(0, 0, 0, 0.4);
++  --shadow-card-hover:
++    0 8px 28px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-active);
++  --shadow-glow: 0 0 20px rgba(201, 147, 58, 0.12);
+ 
+   /* Radii */
+-  --radius:         6px;
+-  --radius-md:      8px;
+-  --radius-lg:      12px;
+-  --radius-xl:      16px;
++  --radius: 6px;
++  --radius-md: 8px;
++  --radius-lg: 12px;
++  --radius-xl: 16px;
+ 
+   /* Typography */
+-  --font-display:   'Instrument Serif', 'Georgia', serif;
+-  --font:           'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+-  --font-mono:      'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+-  --leading:        1.6;
+-  --leading-tight:  1.35;
+-  --tracking:       -0.011em;
++  --font-display: "Instrument Serif", "Georgia", serif;
++  --font: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
++  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
++  --leading: 1.6;
++  --leading-tight: 1.35;
++  --tracking: -0.011em;
+   --tracking-tight: -0.02em;
+ 
+   /* Transitions */
+-  --ease-out:       cubic-bezier(0.16, 1, 0.3, 1);
+-  --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+-  --dur-fast:       120ms;
+-  --dur-normal:     220ms;
+-  --dur-slow:       380ms;
++  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
++  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
++  --dur-fast: 120ms;
++  --dur-normal: 220ms;
++  --dur-slow: 380ms;
+ 
+   /* Venue colors — vivid on dark */
+-  --color-CCS:       #34d399;
+-  --color-NDSS:      #60a5fa;
+-  --color-USENIX:    #f87171;
+-  --color-SP:        #c084fc;
+-  --color-CRYPTO:    #fbbf24;
++  --color-CCS: #34d399;
++  --color-NDSS: #60a5fa;
++  --color-USENIX: #f87171;
++  --color-SP: #c084fc;
++  --color-CRYPTO: #fbbf24;
+   --color-EUROCRYPT: #22d3ee;
++  --color-EuroSP: #3b82f6;
++  --color-VehicleSec: #f97316;
++  --color-TITS: #10b981;
++  --color-TVT: #8b5cf6;
++  --color-VC: #06b6d4;
++  --color-TIFS: #f59e0b;
++  --color-TDSC: #ef4444;
++  --color-COMPSEC: #6366f1;
+ }
+ 
+ /* ── Light Theme ─────────────────────────────── */
+ [data-theme="light"] {
+-  --bg:             #f6f3ed;
+-  --bg-surface:     #eee9e0;
+-  --bg-card:        #ffffff;
+-  --bg-input:       #ffffff;
+-  --bg-hero:        #f6f3ed;
+-  --bg-filter:      #ffffff;
+-
+-  --text:           #1a1820;
++  --bg: #f6f3ed;
++  --bg-surface: #eee9e0;
++  --bg-card: #ffffff;
++  --bg-input: #ffffff;
++  --bg-hero: #f6f3ed;
++  --bg-filter: #ffffff;
++
++  --text: #1a1820;
+   --text-secondary: #555060;
+-  --text-muted:     #8a8598;
+-  --text-dim:       #bbb6c4;
+-
+-  --border:         #d8d3c8;
+-  --border-subtle:  #e8e3d8;
+-  --border-active:  #ccc6b8;
+-
+-  --accent:         #a07028;
+-  --accent-hover:   #8a5e1e;
+-  --accent-soft:    rgba(160, 112, 40, 0.06);
+-  --accent-glow:    rgba(160, 112, 40, 0.12);
+-  --accent-vivid:   #b87e2e;
+-
+-  --link:           #2a7d88;
+-  --link-hover:     #1d5c64;
+-
+-  --shadow-xs:      0 1px 2px rgba(0, 0, 0, 0.05);
+-  --shadow-sm:      0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
+-  --shadow-md:      0 4px 16px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
+-  --shadow-lg:      0 8px 32px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
+-  --shadow-search:  0 4px 24px rgba(160, 112, 40, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06);
+-  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border-active);
+-  --shadow-glow:    0 0 20px rgba(160, 112, 40, 0.08);
+-
+-  --color-CCS:       #16a34a;
+-  --color-NDSS:      #2563eb;
+-  --color-USENIX:    #dc2626;
+-  --color-SP:        #9333ea;
+-  --color-CRYPTO:    #d97706;
++  --text-muted: #8a8598;
++  --text-dim: #bbb6c4;
++
++  --border: #d8d3c8;
++  --border-subtle: #e8e3d8;
++  --border-active: #ccc6b8;
++
++  --accent: #a07028;
++  --accent-hover: #8a5e1e;
++  --accent-soft: rgba(160, 112, 40, 0.06);
++  --accent-glow: rgba(160, 112, 40, 0.12);
++  --accent-vivid: #b87e2e;
++
++  --link: #2a7d88;
++  --link-hover: #1d5c64;
++
++  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
++  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
++  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
++  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
++  --shadow-search:
++    0 4px 24px rgba(160, 112, 40, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06);
++  --shadow-card-hover:
++    0 8px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border-active);
++  --shadow-glow: 0 0 20px rgba(160, 112, 40, 0.08);
++
++  --color-CCS: #16a34a;
++  --color-NDSS: #2563eb;
++  --color-USENIX: #dc2626;
++  --color-SP: #9333ea;
++  --color-CRYPTO: #d97706;
+   --color-EUROCRYPT: #0891b2;
+ }
+ 
+ @media (prefers-color-scheme: light) {
+   :root:not([data-theme="dark"]) {
+-    --bg:             #f6f3ed;
+-    --bg-surface:     #eee9e0;
+-    --bg-card:        #ffffff;
+-    --bg-input:       #ffffff;
+-    --bg-hero:        #f6f3ed;
+-    --bg-filter:      #ffffff;
+-
+-    --text:           #1a1820;
++    --bg: #f6f3ed;
++    --bg-surface: #eee9e0;
++    --bg-card: #ffffff;
++    --bg-input: #ffffff;
++    --bg-hero: #f6f3ed;
++    --bg-filter: #ffffff;
++
++    --text: #1a1820;
+     --text-secondary: #555060;
+-    --text-muted:     #8a8598;
+-    --text-dim:       #bbb6c4;
+-
+-    --border:         #d8d3c8;
+-    --border-subtle:  #e8e3d8;
+-    --border-active:  #ccc6b8;
+-
+-    --accent:         #a07028;
+-    --accent-hover:   #8a5e1e;
+-    --accent-soft:    rgba(160, 112, 40, 0.06);
+-    --accent-glow:    rgba(160, 112, 40, 0.12);
+-    --accent-vivid:   #b87e2e;
+-
+-    --link:           #2a7d88;
+-    --link-hover:     #1d5c64;
+-
+-    --shadow-xs:      0 1px 2px rgba(0, 0, 0, 0.05);
+-    --shadow-sm:      0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
+-    --shadow-md:      0 4px 16px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
+-    --shadow-lg:      0 8px 32px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
+-    --shadow-search:  0 4px 24px rgba(160, 112, 40, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06);
+-    --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border-active);
+-    --shadow-glow:    0 0 20px rgba(160, 112, 40, 0.08);
+-
+-    --color-CCS:       #16a34a;
+-    --color-NDSS:      #2563eb;
+-    --color-USENIX:    #dc2626;
+-    --color-SP:        #9333ea;
+-    --color-CRYPTO:    #d97706;
++    --text-muted: #8a8598;
++    --text-dim: #bbb6c4;
++
++    --border: #d8d3c8;
++    --border-subtle: #e8e3d8;
++    --border-active: #ccc6b8;
++
++    --accent: #a07028;
++    --accent-hover: #8a5e1e;
++    --accent-soft: rgba(160, 112, 40, 0.06);
++    --accent-glow: rgba(160, 112, 40, 0.12);
++    --accent-vivid: #b87e2e;
++
++    --link: #2a7d88;
++    --link-hover: #1d5c64;
++
++    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
++    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
++    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
++    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.09), 0 2px 8px rgba(0, 0, 0, 0.04);
++    --shadow-search:
++      0 4px 24px rgba(160, 112, 40, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06);
++    --shadow-card-hover:
++      0 8px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border-active);
++    --shadow-glow: 0 0 20px rgba(160, 112, 40, 0.08);
++
++    --color-CCS: #16a34a;
++    --color-NDSS: #2563eb;
++    --color-USENIX: #dc2626;
++    --color-SP: #9333ea;
++    --color-CRYPTO: #d97706;
+     --color-EUROCRYPT: #0891b2;
+   }
+ }
+@@ -186,7 +206,11 @@ body::before {
+   content: "";
+   position: fixed;
+   inset: 0;
+-  background-image: radial-gradient(circle, var(--text-dim) 0.5px, transparent 0.5px);
++  background-image: radial-gradient(
++    circle,
++    var(--text-dim) 0.5px,
++    transparent 0.5px
++  );
+   background-size: 24px 24px;
+   opacity: 0.25;
+   pointer-events: none;
+@@ -198,7 +222,11 @@ body::after {
+   content: "";
+   position: fixed;
+   inset: 0;
+-  background: radial-gradient(ellipse at 50% 0%, transparent 40%, var(--bg) 100%);
++  background: radial-gradient(
++    ellipse at 50% 0%,
++    transparent 40%,
++    var(--bg) 100%
++  );
+   pointer-events: none;
+   z-index: 0;
+ }
+@@ -242,7 +270,10 @@ a:hover {
+   transition: opacity var(--dur-fast) ease;
+ }
+ 
+-.site-logo:hover { opacity: 0.75; color: var(--text); }
++.site-logo:hover {
++  opacity: 0.75;
++  color: var(--text);
++}
+ 
+ .site-logo svg {
+   width: 22px;
+@@ -251,7 +282,9 @@ a:hover {
+   transition: transform var(--dur-normal) var(--ease-spring);
+ }
+ 
+-.site-logo:hover svg { transform: rotate(-12deg) scale(1.1); }
++.site-logo:hover svg {
++  transform: rotate(-12deg) scale(1.1);
++}
+ 
+ .site-nav {
+   display: flex;
+@@ -359,7 +392,9 @@ a:hover {
+   border-color: var(--accent);
+   border-style: solid;
+   opacity: 0;
+-  transition: opacity var(--dur-normal) ease, transform var(--dur-normal) var(--ease-out);
++  transition:
++    opacity var(--dur-normal) ease,
++    transform var(--dur-normal) var(--ease-out);
+   pointer-events: none;
+   z-index: 2;
+ }
+@@ -407,7 +442,9 @@ a:hover {
+ 
+ .search-input:focus {
+   border-color: var(--accent);
+-  box-shadow: var(--shadow-search), 0 0 0 3px var(--accent-glow);
++  box-shadow:
++    var(--shadow-search),
++    0 0 0 3px var(--accent-glow);
+ }
+ 
+ .search-input::placeholder {
+@@ -455,8 +492,14 @@ a:hover {
+ }
+ 
+ @keyframes fade-in-up {
+-  from { opacity: 0; transform: translateY(-6px); }
+-  to   { opacity: 1; transform: translateY(0); }
++  from {
++    opacity: 0;
++    transform: translateY(-6px);
++  }
++  to {
++    opacity: 1;
++    transform: translateY(0);
++  }
+ }
+ 
+ .suggestion-item {
+@@ -465,11 +508,15 @@ a:hover {
+   font-size: 0.85rem;
+   color: var(--text-secondary);
+   border-bottom: 1px solid var(--border-subtle);
+-  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
++  transition:
++    background var(--dur-fast) ease,
++    color var(--dur-fast) ease;
+   font-family: var(--font);
+ }
+ 
+-.suggestion-item:last-child { border-bottom: none; }
++.suggestion-item:last-child {
++  border-bottom: none;
++}
+ 
+ .suggestion-item:hover,
+ .suggestion-item.active {
+@@ -538,8 +585,7 @@ a:hover {
+   font-family: var(--font-mono);
+   letter-spacing: 0.04em;
+   text-transform: uppercase;
+-  transition:
+-    all var(--dur-fast) ease;
++  transition: all var(--dur-fast) ease;
+   user-select: none;
+   line-height: 1.5;
+   position: relative;
+@@ -596,7 +642,9 @@ a:hover {
+   font-family: var(--font-mono);
+   text-align: center;
+   outline: none;
+-  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
++  transition:
++    border-color var(--dur-fast) ease,
++    box-shadow var(--dur-fast) ease;
+ }
+ 
+ .year-input:focus {
+@@ -604,7 +652,9 @@ a:hover {
+   box-shadow: 0 0 0 2px var(--accent-glow);
+ }
+ 
+-.year-input::placeholder { color: var(--text-dim); }
++.year-input::placeholder {
++  color: var(--text-dim);
++}
+ 
+ .filter-sep {
+   width: 1px;
+@@ -628,9 +678,13 @@ a:hover {
+   font-family: var(--font);
+ }
+ 
+-.workshop-toggle:hover { color: var(--text-secondary); }
++.workshop-toggle:hover {
++  color: var(--text-secondary);
++}
+ 
+-.workshop-toggle input { accent-color: var(--accent); }
++.workshop-toggle input {
++  accent-color: var(--accent);
++}
+ 
+ .sort-select {
+   padding: 0.25rem 0.5rem;
+@@ -643,7 +697,9 @@ a:hover {
+   font-weight: 400;
+   outline: none;
+   cursor: pointer;
+-  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
++  transition:
++    border-color var(--dur-fast) ease,
++    box-shadow var(--dur-fast) ease;
+ }
+ 
+ .sort-select:focus {
+@@ -755,9 +811,14 @@ a:hover {
+   text-transform: uppercase;
+   font-family: var(--font-mono);
+   line-height: 1.6;
+-  background: color-mix(in srgb, var(--badge-color, var(--accent)) 12%, transparent);
++  background: color-mix(
++    in srgb,
++    var(--badge-color, var(--accent)) 12%,
++    transparent
++  );
+   color: var(--badge-color, var(--accent));
+-  border: 1px solid color-mix(in srgb, var(--badge-color, var(--accent)) 25%, transparent);
++  border: 1px solid
++    color-mix(in srgb, var(--badge-color, var(--accent)) 25%, transparent);
+ }
+ 
+ .workshop-badge {
+@@ -775,7 +836,10 @@ a:hover {
+   font-family: var(--font-mono);
+ }
+ 
+-.paper-info { flex: 1; min-width: 0; }
++.paper-info {
++  flex: 1;
++  min-width: 0;
++}
+ 
+ .paper-title {
+   font-size: 0.9375rem;
+@@ -791,7 +855,9 @@ a:hover {
+   transition: color var(--dur-fast) ease;
+ }
+ 
+-.paper-title a:hover { color: var(--accent); }
++.paper-title a:hover {
++  color: var(--accent);
++}
+ 
+ .paper-authors {
+   font-size: 0.775rem;
+@@ -877,7 +943,9 @@ a:hover {
+   transition: opacity var(--dur-fast) ease;
+ }
+ 
+-.paper-expand:hover { opacity: 0.7; }
++.paper-expand:hover {
++  opacity: 0.7;
++}
+ 
+ .paper-abstract {
+   display: none;
+@@ -929,7 +997,11 @@ a:hover {
+   margin-bottom: 1rem;
+ }
+ 
+-@keyframes spin { to { transform: rotate(360deg); } }
++@keyframes spin {
++  to {
++    transform: rotate(360deg);
++  }
++}
+ 
+ .skeleton-card {
+   background: var(--bg-card);
+@@ -947,13 +1019,26 @@ a:hover {
+   animation: skeleton-pulse 2.5s ease-in-out infinite;
+ }
+ 
+-.skeleton-line:nth-child(1) { width: 50%; }
+-.skeleton-line:nth-child(2) { width: 80%; height: 0.65rem; }
+-.skeleton-line:nth-child(3) { width: 30%; height: 0.55rem; }
++.skeleton-line:nth-child(1) {
++  width: 50%;
++}
++.skeleton-line:nth-child(2) {
++  width: 80%;
++  height: 0.65rem;
++}
++.skeleton-line:nth-child(3) {
++  width: 30%;
++  height: 0.55rem;
++}
+ 
+ @keyframes skeleton-pulse {
+-  0%, 100% { opacity: 0.2; }
+-  50%      { opacity: 0.5; }
++  0%,
++  100% {
++    opacity: 0.2;
++  }
++  50% {
++    opacity: 0.5;
++  }
+ }
+ 
+ /* ── Empty / No Results ──────────────────────── */
+@@ -997,7 +1082,9 @@ a:hover {
+   transition: color var(--dur-fast) ease;
+ }
+ 
+-.site-footer a:hover { color: var(--accent); }
++.site-footer a:hover {
++  color: var(--accent);
++}
+ 
+ /* ── Scrollbar ───────────────────────────────── */
+ ::-webkit-scrollbar {
+@@ -1026,7 +1113,9 @@ a:hover {
+ 
+ /* ── Reduced Motion ──────────────────────────── */
+ @media (prefers-reduced-motion: reduce) {
+-  *, *::before, *::after {
++  *,
++  *::before,
++  *::after {
+     animation-duration: 0.01ms !important;
+     animation-iteration-count: 1 !important;
+     transition-duration: 0.01ms !important;
+@@ -1075,14 +1164,18 @@ a:hover {
+     gap: 0.4rem;
+   }
+ 
+-  .filter-sep { display: none; }
++  .filter-sep {
++    display: none;
++  }
+ 
+   .paper-top {
+     flex-direction: column;
+     gap: 0.25rem;
+   }
+ 
+-  .paper-badges { margin-top: 0; }
++  .paper-badges {
++    margin-top: 0;
++  }
+ 
+   .paper-card {
+     padding: 0.75rem 0.875rem;
+@@ -1094,8 +1187,13 @@ a:hover {
+ }
+ 
+ @media (max-width: 400px) {
+-  .hero h1 { font-size: 1.65rem; }
+-  .venue-chip { font-size: 0.625rem; padding: 0.1875rem 0.5rem; }
++  .hero h1 {
++    font-size: 1.65rem;
++  }
++  .venue-chip {
++    font-size: 0.625rem;
++    padding: 0.1875rem 0.5rem;
++  }
+ }
+ 
+ /* ── Focus Visible ───────────────────────────── */
+diff --git a/index.html b/index.html
+index 1f0d59d..3c94568 100644
+--- a/index.html
++++ b/index.html
+@@ -59,6 +59,14 @@
+       <button class="venue-chip active" data-venue="SP" style="--chip-color: var(--color-SP)">IEEE S&amp;P</button>
+       <button class="venue-chip active" data-venue="CRYPTO" style="--chip-color: var(--color-CRYPTO)">CRYPTO</button>
+       <button class="venue-chip active" data-venue="EUROCRYPT" style="--chip-color: var(--color-EUROCRYPT)">EUROCRYPT</button>
++      <button class="venue-chip active" data-venue="EuroSP"    style="--chip-color: #3b82f6">EURO S&amp;P</button>
++      <button class="venue-chip active" data-venue="VehicleSec" style="--chip-color: #f97316">VehicleSec</button>
++      <button class="venue-chip active" data-venue="TITS"       style="--chip-color: #10b981">IEEE T-ITS</button>
++      <button class="venue-chip active" data-venue="TVT"        style="--chip-color: #8b5cf6">IEEE TVT</button>
++      <button class="venue-chip active" data-venue="VC"         style="--chip-color: #06b6d4">Veh. Comms.</button>
++      <button class="venue-chip active" data-venue="TIFS"       style="--chip-color: #f59e0b">TIFS</button>
++      <button class="venue-chip active" data-venue="TDSC"       style="--chip-color: #ef4444">TDSC</button>
++      <button class="venue-chip active" data-venue="COMPSEC"    style="--chip-color: #6366f1">Comp. &amp; Sec.</button>
+     </div>
+ 
+     <span class="filter-sep"></span>
+diff --git a/js/utils.js b/js/utils.js
+index d62d20a..f56b13a 100644
+--- a/js/utils.js
++++ b/js/utils.js
+@@ -19,24 +19,24 @@ function debounce(fn, ms) {
+  */
+ function truncate(text, maxLen) {
+   if (!text || text.length <= maxLen) return text;
+-  return text.slice(0, maxLen).trimEnd() + '...';
++  return text.slice(0, maxLen).trimEnd() + "...";
+ }
+ 
+ /**
+  * Format author list for display. Shows up to `max` authors, then "+ N more".
+  */
+ function formatAuthors(authors, max = 5) {
+-  if (!authors || authors.length === 0) return '';
++  if (!authors || authors.length === 0) return "";
+   const names = authors.map((a) => a.name);
+-  if (names.length <= max) return names.join(', ');
+-  return names.slice(0, max).join(', ') + ` + ${names.length - max} more`;
++  if (names.length <= max) return names.join(", ");
++  return names.slice(0, max).join(", ") + ` + ${names.length - max} more`;
+ }
+ 
+ /**
+  * Escape HTML to prevent XSS.
+  */
+ function escapeHtml(str) {
+-  const div = document.createElement('div');
++  const div = document.createElement("div");
+   div.textContent = str;
+   return div.innerHTML;
+ }
+@@ -45,15 +45,39 @@ function escapeHtml(str) {
+  * Venue display names (short labels used in chips).
+  */
+ const VENUE_NAMES = {
+-  CCS: 'CCS',
+-  NDSS: 'NDSS',
+-  USENIX: 'USENIX Security',
+-  SP: 'IEEE S&P',
+-  CRYPTO: 'CRYPTO',
+-  EUROCRYPT: 'EUROCRYPT',
++  CCS: "CCS",
++  NDSS: "NDSS",
++  USENIX: "USENIX Security",
++  SP: "IEEE S&P",
++  CRYPTO: "CRYPTO",
++  EUROCRYPT: "EUROCRYPT",
++  EuroSP: "EURO S&P",
++  VehicleSec: "VehicleSec",
++  TITS: "IEEE T-ITS",
++  TVT: "IEEE TVT",
++  VC: "Veh. Comms.",
++  TIFS: "TIFS",
++  TDSC: "TDSC",
++  COMPSEC: "Comp. & Sec.",
+ };
+ 
+ /**
+  * All venue keys.
+  */
+-const ALL_VENUES = ['CCS', 'NDSS', 'USENIX', 'SP', 'CRYPTO', 'EUROCRYPT'];
++// const ALL_VENUES = ['CCS', 'NDSS', 'USENIX', 'SP', 'CRYPTO', 'EUROCRYPT'];
++const ALL_VENUES = [
++  "CCS",
++  "NDSS",
++  "USENIX",
++  "SP",
++  "CRYPTO",
++  "EUROCRYPT", // existing
++  "EuroSP",
++  "VehicleSec",
++  "TITS",
++  "TVT",
++  "VC",
++  "TIFS",
++  "TDSC",
++  "COMPSEC",
++];
+diff --git a/package-lock.json b/package-lock.json
+index feaae98..4c2bb71 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,12 +1,15 @@
+ {
+-  "name": "securestar",
++  "name": "sls",
+   "version": "1.0.0",
+   "lockfileVersion": 3,
+   "requires": true,
+   "packages": {
+     "": {
+-      "name": "securestar",
++      "name": "sls",
+       "version": "1.0.0",
++      "dependencies": {
++        "undici": "^8.0.2"
++      },
+       "devDependencies": {
+         "minisearch": "^7.1.1"
+       }
+@@ -17,6 +20,15 @@
+       "integrity": "sha512-dqT2XBYUOZOiC5t2HRnwADjhNS2cecp9u+TJRiJ1Qp/f5qjkeT5APcGPjHw+bz89Ms8Jp+cG4AlE+QZ/QnDglg==",
+       "dev": true,
+       "license": "MIT"
++    },
++    "node_modules/undici": {
++      "version": "8.0.2",
++      "resolved": "https://registry.npmjs.org/undici/-/undici-8.0.2.tgz",
++      "integrity": "sha512-B9MeU5wuFhkFAuNeA19K2GDFcQXZxq33fL0nRy2Aq30wdufZbyyvxW3/ChaeipXVfy/wUweZyzovQGk39+9k2w==",
++      "license": "MIT",
++      "engines": {
++        "node": ">=22.19.0"
++      }
+     }
+   }
+ }
+diff --git a/package.json b/package.json
+index 213fb66..4c9f971 100644
+--- a/package.json
++++ b/package.json
+@@ -14,5 +14,8 @@
+   },
+   "devDependencies": {
+     "minisearch": "^7.1.1"
++  },
++  "dependencies": {
++    "undici": "^8.0.2"
+   }
+ }
+diff --git a/scripts/config.js b/scripts/config.js
+index d30b8da..268d3da 100644
+--- a/scripts/config.js
++++ b/scripts/config.js
+@@ -3,56 +3,113 @@
+ 
+ export const VENUES = [
+   {
+-    key: 'CCS',
+-    name: 'CCS',
+-    fullName: 'ACM Conference on Computer and Communications Security',
+-    color: '#22c55e',
+-    dblpQuery: 'venue:CCS:',
++    key: "CCS",
++    name: "CCS",
++    fullName: "ACM Conference on Computer and Communications Security",
++    color: "#22c55e",
++    dblpQuery: "venue:CCS:",
+   },
+   {
+-    key: 'NDSS',
+-    name: 'NDSS',
+-    fullName: 'Network and Distributed System Security Symposium',
+-    color: '#3b82f6',
+-    dblpQuery: 'venue:NDSS:',
++    key: "NDSS",
++    name: "NDSS",
++    fullName: "Network and Distributed System Security Symposium",
++    color: "#3b82f6",
++    dblpQuery: "venue:NDSS:",
+   },
+   {
+-    key: 'USENIX',
+-    name: 'USENIX Security',
+-    fullName: 'USENIX Security Symposium',
+-    color: '#ef4444',
+-    dblpQuery: 'venue:USENIX Security:',
++    key: "USENIX",
++    name: "USENIX Security",
++    fullName: "USENIX Security Symposium",
++    color: "#ef4444",
++    dblpQuery: "venue:USENIX Security:",
+   },
+   {
+-    key: 'SP',
+-    name: 'IEEE S&P',
+-    fullName: 'IEEE Symposium on Security and Privacy',
+-    color: '#a855f7',
+-    dblpQuery: 'venue:SP:',
++    key: "SP",
++    name: "IEEE S&P",
++    fullName: "IEEE Symposium on Security and Privacy",
++    color: "#a855f7",
++    dblpQuery: "venue:SP:",
+   },
+   {
+-    key: 'CRYPTO',
+-    name: 'CRYPTO',
+-    fullName: 'Annual International Cryptology Conference',
+-    color: '#f59e0b',
+-    dblpQuery: 'venue:CRYPTO:',
++    key: "CRYPTO",
++    name: "CRYPTO",
++    fullName: "Annual International Cryptology Conference",
++    color: "#86efac",
++    dblpQuery: "venue:CRYPTO:",
+   },
+   {
+-    key: 'EUROCRYPT',
+-    name: 'EUROCRYPT',
+-    fullName: 'International Conference on the Theory and Application of Cryptographic Techniques',
+-    color: '#06b6d4',
+-    dblpQuery: 'venue:EUROCRYPT:',
++    key: "EUROCRYPT",
++    name: "EUROCRYPT",
++    fullName:
++      "International Conference on the Theory and Application of Cryptographic Techniques",
++    color: "#06b6d4",
++    dblpQuery: "venue:EUROCRYPT:",
++  },
++  {
++    key: "EuroSP",
++    name: "EURO S&P",
++    fullName: "IEEE European Symposium on Security and Privacy",
++    color: "#4f46e5",
++    dblpQuery: "venue:EuroS&P:",
++  },
++  {
++    key: "VehicleSec",
++    name: "VehicleSec",
++    fullName: "ISOC Symposium on Vehicle Security and Privacy",
++    color: "#f97316",
++    dblpQuery: "venue:VehicleSec:",
++  },
++  {
++    key: "TITS",
++    name: "IEEE T-ITS",
++    fullName: "IEEE Transactions on Intelligent Transportation Systems",
++    color: "#10b981",
++    dblpQuery: "stream:journals/tits:",
++  },
++  {
++    key: "TVT",
++    name: "IEEE TVT",
++    fullName: "IEEE Transactions on Vehicular Technology",
++    color: "#8b5cf6",
++    dblpQuery: "stream:journals/tvt:",
++  },
++  {
++    key: "VC",
++    name: "Veh. Comms.",
++    fullName: "Vehicular Communications",
++    color: "#84cc16",
++    dblpQuery: "stream:journals/vc:",
++  },
++  {
++    key: "TIFS",
++    name: "TIFS",
++    fullName: "IEEE Transactions on Information Forensics and Security",
++    color: "#f59e0b",
++    dblpQuery: "stream:journals/tifs:",
++  },
++  {
++    key: "TDSC",
++    name: "TDSC",
++    fullName: "IEEE Transactions on Dependable and Secure Computing",
++    color: "#fda4af",
++    dblpQuery: "stream:journals/tdsc:",
++  },
++  {
++    key: "COMPSEC",
++    name: "Comp. & Sec.",
++    fullName: "Computers & Security",
++    color: "#6366f1",
++    dblpQuery: "stream:journals/compsec:",
+   },
+ ];
+ 
+ // DBLP API settings
+-export const DBLP_API_BASE = 'https://dblp.org/search/publ/api';
++export const DBLP_API_BASE = "https://dblp.org/search/publ/api";
+ export const DBLP_HITS_PER_PAGE = 1000;
+ export const DBLP_DELAY_MS = 1500; // Delay between API requests to be polite
+ 
+ // Semantic Scholar API settings
+-export const S2_API_BASE = 'https://api.semanticscholar.org/graph/v1/paper';
+-export const S2_FIELDS = 'abstract,citationCount,tldr,openAccessPdf';
++export const S2_API_BASE = "https://api.semanticscholar.org/graph/v1/paper";
++export const S2_FIELDS = "abstract,citationCount,tldr,openAccessPdf";
+ export const S2_RATE_LIMIT = 5; // requests per second
+-export const S2_CACHE_DIR = 'data/s2-cache';
++export const S2_CACHE_DIR = "data/s2-cache";
+-- 
+2.34.1
+
