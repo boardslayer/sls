@@ -352,3 +352,4 @@ MiniSearch uses fuzzy matching with 0.2 edit distance. For very short queries (1
 - [ ] Conference timeline — visual chart of papers per venue per year
 - [ ] Zotero integration — meta tags compatible with the Zotero Connector
 - [ ] Citation graph — explore paper connections using Semantic Scholar reference data
+
