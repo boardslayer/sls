@@ -12,13 +12,15 @@ const SearchEngine = {
     const t0 = performance.now();
 
     const [indexResp, papersResp, statsResp] = await Promise.all([
-      fetch('data/search-index.json'),
-      fetch('data/papers.json'),
-      fetch('data/stats.json'),
+      fetch("data/search-index.json"),
+      fetch("data/papers.json"),
+      fetch("data/stats.json"),
     ]);
 
     if (!indexResp.ok || !papersResp.ok) {
-      throw new Error('Failed to load data files. Run npm run build-data first.');
+      throw new Error(
+        "Failed to load data files. Run npm run build-data first.",
+      );
     }
 
     const [indexJson, papersJson] = await Promise.all([
@@ -28,8 +30,8 @@ const SearchEngine = {
 
     // Deserialize MiniSearch index
     this._index = MiniSearch.loadJSON(indexJson, {
-      fields: ['title', 'abstract', 'authorNames'],
-      storeFields: ['title', 'venue', 'year', 'isWorkshop'],
+      fields: ["title", "abstract", "authorNames"],
+      storeFields: ["title", "venue", "year", "isWorkshop"],
     });
 
     // Build paper lookup map
@@ -74,7 +76,7 @@ const SearchEngine = {
     if (!this._ready) return [];
 
     // Empty query → browse mode
-    if (!query || query.trim() === '') {
+    if (!query || query.trim() === "") {
       return this._browse(filters);
     }
 
@@ -97,10 +99,12 @@ const SearchEngine = {
   suggest(query) {
     if (!this._ready || !query || query.length < 2) return [];
 
-    return this._index.autoSuggest(query, {
-      fuzzy: 0.2,
-      prefix: true,
-    }).slice(0, 8);
+    return this._index
+      .autoSuggest(query, {
+        fuzzy: 0.2,
+        prefix: true,
+      })
+      .slice(0, 8);
   },
 
   /**
@@ -127,7 +131,10 @@ const SearchEngine = {
     }
 
     // Default sort for browse: newest first
-    return this._sortResults([...papers], filters.sort === 'relevance' ? 'year-desc' : filters.sort);
+    return this._sortResults(
+      [...papers],
+      filters.sort === "relevance" ? "year-desc" : filters.sort,
+    );
   },
 
   /**
@@ -140,12 +147,14 @@ const SearchEngine = {
 
   _sortResults(papers, sortKey) {
     switch (sortKey) {
-      case 'year-desc':
+      case "year-desc":
         return papers.sort((a, b) => b.year - a.year);
-      case 'year-asc':
+      case "year-asc":
         return papers.sort((a, b) => a.year - b.year);
-      case 'citations':
-        return papers.sort((a, b) => (b.citationCount || 0) - (a.citationCount || 0));
+      case "citations":
+        return papers.sort(
+          (a, b) => (b.citationCount || 0) - (a.citationCount || 0),
+        );
       default: // 'relevance' — keep MiniSearch order
         return papers;
     }

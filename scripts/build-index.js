@@ -7,31 +7,33 @@
  *   - data/stats.json      (aggregate statistics)
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import MiniSearch from 'minisearch';
-import { VENUES } from './config.js';
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import MiniSearch from "minisearch";
+import { VENUES } from "./config.js";
 
 function main() {
   // Load papers — prefer enriched, fall back to raw DBLP
-  let inputFile = 'data/enriched.json';
+  let inputFile = "data/enriched.json";
   if (!existsSync(inputFile)) {
-    inputFile = 'data/raw-dblp.json';
+    inputFile = "data/raw-dblp.json";
     if (!existsSync(inputFile)) {
-      console.error('No data files found. Run fetch-dblp.js first.');
+      console.error("No data files found. Run fetch-dblp.js first.");
       process.exit(1);
     }
-    console.log('Note: Using raw DBLP data (no abstracts). Run enrich-abstracts.js for full data.\n');
+    console.log(
+      "Note: Using raw DBLP data (no abstracts). Run enrich-abstracts.js for full data.\n",
+    );
   }
 
-  const papers = JSON.parse(readFileSync(inputFile, 'utf-8'));
+  const papers = JSON.parse(readFileSync(inputFile, "utf-8"));
   console.log(`Building search index from ${papers.length} papers...`);
 
   // Prepare papers for indexing: add a joined author names field
   const indexablePapers = papers.map((p) => ({
     id: p.id,
     title: p.title,
-    abstract: p.abstract || '',
-    authorNames: p.authors.map((a) => a.name).join(' '),
+    abstract: p.abstract || "",
+    authorNames: p.authors.map((a) => a.name).join(" "),
     venue: p.venue,
     year: p.year,
     isWorkshop: p.isWorkshop,
@@ -39,8 +41,8 @@ function main() {
 
   // Build MiniSearch index
   const miniSearch = new MiniSearch({
-    fields: ['title', 'abstract', 'authorNames'],
-    storeFields: ['title', 'venue', 'year', 'isWorkshop'],
+    fields: ["title", "abstract", "authorNames"],
+    storeFields: ["title", "venue", "year", "isWorkshop"],
     searchOptions: {
       boost: { title: 2, authorNames: 0.5 },
       fuzzy: 0.2,
@@ -53,8 +55,10 @@ function main() {
 
   // Serialize the index
   const searchIndex = JSON.stringify(miniSearch);
-  writeFileSync('data/search-index.json', searchIndex);
-  console.log(`Search index: ${(Buffer.byteLength(searchIndex) / 1024 / 1024).toFixed(1)} MB`);
+  writeFileSync("data/search-index.json", searchIndex);
+  console.log(
+    `Search index: ${(Buffer.byteLength(searchIndex) / 1024 / 1024).toFixed(1)} MB`,
+  );
 
   // Build papers.json (frontend dataset — no need to duplicate indexed fields)
   const frontendPapers = papers.map((p) => ({
@@ -75,8 +79,10 @@ function main() {
     isWorkshop: p.isWorkshop,
   }));
 
-  writeFileSync('data/papers.json', JSON.stringify(frontendPapers));
-  console.log(`Papers data: ${(Buffer.byteLength(JSON.stringify(frontendPapers)) / 1024 / 1024).toFixed(1)} MB`);
+  writeFileSync("data/papers.json", JSON.stringify(frontendPapers));
+  console.log(
+    `Papers data: ${(Buffer.byteLength(JSON.stringify(frontendPapers)) / 1024 / 1024).toFixed(1)} MB`,
+  );
 
   // Build stats
   const venueKeys = VENUES.map((v) => v.key);
@@ -90,7 +96,7 @@ function main() {
       max: Math.max(...papers.map((p) => p.year)),
     },
     perVenue: {},
-    lastUpdated: new Date().toISOString().split('T')[0],
+    lastUpdated: new Date().toISOString().split("T")[0],
   };
 
   for (const key of venueKeys) {
@@ -102,9 +108,11 @@ function main() {
     };
   }
 
-  writeFileSync('data/stats.json', JSON.stringify(stats, null, 2));
-  console.log('\nStats:', JSON.stringify(stats, null, 2));
-  console.log('\nDone! Files written: data/papers.json, data/search-index.json, data/stats.json');
+  writeFileSync("data/stats.json", JSON.stringify(stats, null, 2));
+  console.log("\nStats:", JSON.stringify(stats, null, 2));
+  console.log(
+    "\nDone! Files written: data/papers.json, data/search-index.json, data/stats.json",
+  );
 }
 
 main();
