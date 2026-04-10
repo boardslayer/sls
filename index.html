@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SLS — Security Literature Search</title>
+  <meta name="description" content="Search across 15,000+ papers from CCS, NDSS, USENIX Security, IEEE S&P, CRYPTO, and EUROCRYPT.">
+  <meta property="og:title" content="SLS: Security Literature Search">
+  <meta property="og:description" content="Search top security & cryptography conference papers">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <a href="./" class="site-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+      SLS
+    </a>
+    <nav class="site-nav">
+      <a href="https://github.com/boardslayer/SLS" target="_blank" rel="noopener">GitHub</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <span id="themeIcon">&#9790;</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Hero + Search -->
+  <section class="hero">
+    <h1>Security Literature Search</h1>
+    <p class="tagline">Search top security &amp; cryptography conference papers</p>
+    <div class="search-wrapper">
+      <span class="search-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+      <input type="text" class="search-input" id="searchInput"
+             placeholder="Search by title, author, or keyword..."
+             autocomplete="off" spellcheck="false">
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+    <p class="stats-line" id="statsLine">Loading paper data...</p>
+  </section>
+
+  <!-- Filters -->
+  <div class="filters-bar" id="filtersBar">
+    <div class="venue-chips" id="venueChips">
+      <button class="venue-chip active" data-venue="CCS" style="--chip-color: var(--color-CCS)">CCS</button>
+      <button class="venue-chip active" data-venue="NDSS" style="--chip-color: var(--color-NDSS)">NDSS</button>
+      <button class="venue-chip active" data-venue="USENIX" style="--chip-color: var(--color-USENIX)">USENIX</button>
+      <button class="venue-chip active" data-venue="SP" style="--chip-color: var(--color-SP)">IEEE S&amp;P</button>
+      <button class="venue-chip active" data-venue="CRYPTO" style="--chip-color: var(--color-CRYPTO)">CRYPTO</button>
+      <button class="venue-chip active" data-venue="EUROCRYPT" style="--chip-color: var(--color-EUROCRYPT)">EUROCRYPT</button>
+    </div>
+
+    <span class="filter-sep"></span>
+
+    <div class="filter-group">
+      <label for="yearMin">Year</label>
+      <input type="number" class="year-input" id="yearMin" placeholder="Min">
+      <span>-</span>
+      <input type="number" class="year-input" id="yearMax" placeholder="Max">
+    </div>
+
+    <span class="filter-sep"></span>
+
+    <label class="workshop-toggle">
+      <input type="checkbox" id="workshopToggle" checked>
+      Workshops
+    </label>
+
+    <span class="filter-sep"></span>
+
+    <div class="filter-group">
+      <label for="sortSelect">Sort</label>
+      <select class="sort-select" id="sortSelect">
+        <option value="relevance">Relevance</option>
+        <option value="year-desc">Newest first</option>
+        <option value="year-asc">Oldest first</option>
+        <option value="citations">Most cited</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <main class="results-container" id="results">
+    <div class="loading-container" id="loadingState">
+      <div class="loading-spinner"></div>
+      <p>Loading search index...</p>
+      <div style="margin-top: 1.5rem">
+        <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>
+      Paper metadata from <a href="https://dblp.org" target="_blank" rel="noopener">DBLP</a> (CC0) &middot;
+      Abstracts from <a href="https://www.semanticscholar.org" target="_blank" rel="noopener">Semantic Scholar</a> &middot;
+      Last updated: <span id="lastUpdated">-</span>
+    </p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/minisearch.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
